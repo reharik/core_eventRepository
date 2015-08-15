@@ -1,5 +1,5 @@
 {
-  "name": "eventRepository",
+  "name": "eventrepository",
   "version": "0.0.1",
   "main": "src/index.js",
   "scripts": {
@@ -18,9 +18,9 @@
     "invariant": "^2.1.0",
     "uuid": "^2.0.1",
     "extend": "^3.0.0",
-    "yowlWrapper": "git+",
-    "eventModels": "git+",
-    "eventRepository": "git+"
+    "yowlWrapper": "git+https://github.com/reharik/core_yowlWrapper.git",
+    "eventModels": "git+https://github.com/reharik/core_eventModels.git",
+    "eventRepository": "git+https://github.com/reharik/core_eventRepository.git"
   },
   "devDependencies": {
     "babel": "^5.5.6",
