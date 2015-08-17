@@ -4,37 +4,21 @@
 
 require('must');
 var _ = require('lodash');
+var eventStore = require('eventstore');
+var uuid = require('uuid');
+var TestAgg = require('./mocks/TestAgg');
+var eventModels = require('eventModels');
+var JSON = require('JSON');
+var index = require('../../src/index');
+var mut;
 
-var container;
 
 describe('getEventStoreRepository', function() {
     var mut;
-    var TestAgg;
     var BadAgg = function(){};
-    var badAgg = new BadAgg();
-    var testAgg;
-    var uuid;
-    var gesConnection;
-    var streamNameStrategy;
-    var GesEvent;
-    var JSON;
 
     before(function(){
-        container = require('../testBootstrap');
-        streamNameStrategy = container.getInstanceOf('streamNameStrategy');
-        gesConnection = container.getInstanceOf('gesConnection');
-        if(gesConnection &&_.isFunction(gesConnection.openConnection)) {
-            container.inject({name: 'gesConnection', resolvedInstance: gesConnection.openConnection()});
-
-            gesConnection = container.getInstanceOf('gesConnection');
-        }
-
-
-        uuid = container.getInstanceOf('uuid');
-        TestAgg = container.getInstanceOf('testAgg');
-        GesEvent = container.getInstanceOf('GesEvent');
-        JSON = container.getInstanceOf('JSON');
-        mut = container.getInstanceOf('gesRepository')();
+        mut = index(eventStore({unitTest: true}));
     });
 
     describe('#getById', function() {
@@ -65,7 +49,8 @@ describe('getEventStoreRepository', function() {
                         {OriginalEvent:{EventType:'someAggEvent',Data: data, Metadata: {eventTypeName:'someEventNotificationOn'}}}],
                     IsEndOfStream: false
                 };
-                gesConnection.readStreamEventForwardShouldReturnResult(result);
+                //TODO not sure what to do here yet
+                //gesConnection.readStreamEventForwardShouldReturnResult(result);
                 var results = await mut.getById(TestAgg,uuid.v1(),0);
                 results.must.be.instanceof(TestAgg);
             })
@@ -80,7 +65,8 @@ describe('getEventStoreRepository', function() {
                         {OriginalEvent:{EventType:'someAggEvent', Metadata: {eventTypeName:'someAggEvent'}}}],
                     IsEndOfStream: false
                 };
-                gesConnection.readStreamEventForwardShouldReturnResult(result);
+                //TODO not sure what to do here yet
+                //gesConnection.readStreamEventForwardShouldReturnResult(result);
                 var agg = await mut.getById(TestAgg,uuid.v1(),0);
                 agg.getEventsHandled().length.must.equal(3);
             })
@@ -95,7 +81,7 @@ describe('getEventStoreRepository', function() {
 
         context('when calling getById with proper args but stream deleted', function (){
             it('should throw proper error', function () {
-                var data = JSON.stringify(new GesEvent('someEventNotificationOn',null,{blah:'blah'}));
+                var data = JSON.stringify(new eventModels.GesEvent('someEventNotificationOn',null,{blah:'blah'}));
                 var result = {
                     Status: 'StreamDeleted',
                     NextEventNumber:3,
@@ -105,10 +91,10 @@ describe('getEventStoreRepository', function() {
                     IsEndOfStream: false
                 };
                 var id = uuid.v1();
-                var streamName = streamNameStrategy(TestAgg.aggregateName(),id);
-                gesConnection.readStreamEventForwardShouldReturnResult(result);
+                //TODO not sure what to do here yet
+                //gesConnection.readStreamEventForwardShouldReturnResult(result);
                 var byId = mut.getById(TestAgg, id, 0);
-                byId.must.reject.error(Error, 'Aggregate Deleted: '+streamName);
+                byId.must.reject.error(Error, 'Aggregate Deleted: '+TestAgg.aggregateName()+id);
             })
         });
         context('when calling getById with proper args but stream not found', function (){
@@ -122,7 +108,7 @@ describe('getEventStoreRepository', function() {
                             {Event:{EventType:'someAggEvent',Data: data, OriginalEvent: {Metadata: {eventTypeName:'someEventNotificationOn'}}}}],
                     IsEndOfStream: false
                 };
-                var id = uuid.v1();
+                 var id = uuid.v1();
                 var streamName = streamNameStrategy(TestAgg.aggregateName(),id);
                 gesConnection.readStreamEventForwardShouldReturnResult(result);
                 var byId = mut.getById(TestAgg, id, 0);
