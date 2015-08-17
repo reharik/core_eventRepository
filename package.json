@@ -18,8 +18,8 @@
     "invariant": "^2.1.0",
     "uuid": "^2.0.1",
     "extend": "^3.0.0",
-    "yowlWrapper": "git+https://github.com/reharik/core_yowlWrapper.git",
-    "eventModels": "git+https://github.com/reharik/core_eventModels.git"
+    "yowlwrapper": "git+https://github.com/reharik/core_yowlWrapper.git",
+    "eventmodels": "git+https://github.com/reharik/core_eventModels.git"
   },
   "devDependencies": {
     "babel": "^5.5.6",
