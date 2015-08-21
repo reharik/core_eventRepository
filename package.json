@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "main": "src/index.js",
   "scripts": {
-    "start":"babel-node --harmony src/index.js --stage 0",
+    "start": "babel-node --harmony src/index.js --stage 0",
     "test": "mocha --opts tests/mocha.opts tests/unitTests",
     "testSpecific": "mocha --opts tests/mocha.opts ",
     "testDebug": "node-debug _mocha --timeout 15000 --opts tests/mocha.opts unitTests",
@@ -15,20 +15,22 @@
   "dependencies": {
     "JSON": "^1.0.0",
     "bluebird": "^2.9.27",
-    "invariant": "^2.1.0",
-    "uuid": "^2.0.1",
+    "eventStore": "git+https://github.com/reharik/core_eventStore.git",
+    "eventmodels": "git+https://github.com/reharik/core_eventModels.git",
     "extend": "^3.0.0",
-    "yowlwrapper": "git+https://github.com/reharik/core_yowlWrapper.git",
-    "eventmodels": "git+https://github.com/reharik/core_eventModels.git"
+    "invariant": "^2.1.0",
+    "must": "^0.13.0-beta2",
+    "uuid": "^2.0.1",
+    "appdomain": "git+https://github.com/reharik/MF_Domain.git",
+    "yowlwrapper": "git+https://github.com/reharik/core_yowlWrapper.git"
   },
   "devDependencies": {
-    "babel": "^5.5.6",
-    "babel-runtime": "^5.5.6",
-    "babelify": "^5.0.4",
+    "babel": "^5.8.2",
+    "babel-runtime": "^5.8.2",
     "del": "^1.2.0",
     "gulp": "^3.9.0",
     "mocha": "^2.2.5",
     "mochawait": "^2.0.1",
-    "must": "^0.12.0"
+    "must": "^0.13.0-beta2"
   }
 }

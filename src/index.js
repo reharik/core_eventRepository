@@ -4,14 +4,17 @@
 
 var extend = require('extend');
 var eventRepository = require('./eventRepository');
-var yowlWrapper = require('yowlWrapper');
+var yowlWrapper = require('yowlwrapper');
 
 module.exports = function index(eventStore, _options) {
+    console.log('here2');
+
     var options = {
         logger: {
             moduleName: 'EventRepository'
         }
     };
+
     extend(options, _options || {});
 
     var logger = yowlWrapper(options.logger);
