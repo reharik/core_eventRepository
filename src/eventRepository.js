@@ -9,7 +9,7 @@ var JSON = require('JSON');
 var extend = require('extend');
 
 
-module.exports = function(_eventStore, _    logger, _options) {
+module.exports = function(_eventStore, _logger, _options) {
     var logger = _logger;
     var eventStore = _eventStore;
     logger.trace('constructor | constructing gesRepository');
@@ -86,7 +86,7 @@ module.exports = function(_eventStore, _    logger, _options) {
 
                 logger.debug('getById | about to loop through and apply events to aggregate');
                 //console.log(eventModels.GesEvent);
-                currentSlice.Events.forEach(e=> aggregate.applyEvent(eventModels.GesEvent.gesEventFromStream(e, 'eventTypeName')));
+                currentSlice.Events.forEach(e=> aggregate.applyEvent(eventModels.gesEvent.gesEventFromStream(e, 'eventTypeName')));
                 logger.info('getById | events applied to aggregate');
             } while (version >= currentSlice.NextEventNumber && !currentSlice.IsEndOfStream);
         } catch (error) {
@@ -140,7 +140,7 @@ module.exports = function(_eventStore, _    logger, _options) {
             logger.trace('save | calculating expected version :' + expectedVersion);
 
             logger.debug('save | creating EventData for each event');
-            events = newEvents.map(x=> new eventModels.EventData(x.eventName, x.data, metadata));
+            events = newEvents.map(x=> eventModels.eventData(x.eventName, x.data, metadata));
             logger.trace('save | EventData created for each event');
 
             appendData = {
