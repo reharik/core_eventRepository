@@ -85,8 +85,8 @@ module.exports = function(_eventStore, _logger, _options) {
                 logger.trace('getById | new sliceStart calculated: ' + sliceStart);
 
                 logger.debug('getById | about to loop through and apply events to aggregate');
-                //console.log(eventModels.GesEvent);
-                currentSlice.Events.forEach(e=> aggregate.applyEvent(eventModels.gesEvent.gesEventFromStream(e, 'eventTypeName')));
+                console.log(currentSlice.Events);
+                currentSlice.Events.forEach(e=> aggregate.applyEvent(eventModels.gesEvent.gesEventFromStream(e)));
                 logger.info('getById | events applied to aggregate');
             } while (version >= currentSlice.NextEventNumber && !currentSlice.IsEndOfStream);
         } catch (error) {
@@ -161,8 +161,8 @@ module.exports = function(_eventStore, _logger, _options) {
             throw(error);
         }
         //largely for testing purposes
-        return result;
-    }
+        return appendData;
+    };
 
     return {
         getById: getById,

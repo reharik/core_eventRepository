@@ -28,11 +28,11 @@ module.exports = class TestAgg extends appdomain.AggregateRootBase {
     commandHandlers() {
         return {
             'someCommand': function (command) {
-                var vent1 = new eventModels.GesEvent('someAggEvent', {blah: command.value}, {someMetadata: '1234'});
+                var vent1 = new eventModels.gesEvent('someAggEvent', {blah: command.value}, {someMetadata: '1234'});
                 this.raiseEvent(vent1);
             },
             'someOtherCommand': function (command) {
-                var vent2 = new eventModels.GesEvent('someOtherAggEvent', {blah: command.value}, {someOtherMetadata: '1234'});
+                var vent2 = new eventModels.gesEvent('someOtherAggEvent', {blah: command.value}, {someOtherMetadata: '1234'});
                 this.raiseEvent(vent2);
             }
         }
@@ -41,7 +41,6 @@ module.exports = class TestAgg extends appdomain.AggregateRootBase {
     applyEventHandlers() {
         return {
             'someAggEvent': function (event) {
-                console.log('here');
                 this.eventsHandled.push(event);
             }.bind(this),
             'someOtherAggEvent': function (event) {
