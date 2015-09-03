@@ -1,28 +1,15 @@
 {
   "name": "eventrepository",
   "version": "0.0.1",
-  "private": false,
-  "description": "core_eventRepository",
-  "homepage": "https://github.com/reharik/core_eventRepository#readme",
   "main": "src/index.js",
   "scripts": {
     "start": "babel-node --harmony src/index.js --stage 0",
-    "test": "mocha --opts ./tests/mocha.opts ./tests/unitTests/*.js",
+    "test": "mocha --opts tests/mocha.opts tests/unitTests",
     "testSpecific": "mocha --opts tests/mocha.opts ",
     "testDebug": "node-debug _mocha --timeout 15000 --opts tests/mocha.opts unitTests",
     "intTest": "mocha --opts integrationTests/mocha.opts --opts tests/mocha.opts",
     "intTestSpecific": "mocha --opts tests/mocha.opts "
   },
-  "bugs": {
-    "url": "https://github.com/reharik/core_eventRepository/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/reharik/core_eventRepository.git"
-  },
-  "keywords": [
-  ],
-  "author": "Raif Harik",
   "license": "MIT",
   "node": ">=0.12.0",
   "dependencies": {
@@ -32,6 +19,7 @@
     "eventmodels": "git+https://github.com/reharik/core_eventModels.git",
     "extend": "^3.0.0",
     "invariant": "^2.1.0",
+    "must": "^0.13.0-beta2",
     "uuid": "^2.0.1",
     "appdomain": "git+https://github.com/reharik/MF_Domain.git",
     "yowlwrapper": "git+https://github.com/reharik/core_yowlWrapper.git"
