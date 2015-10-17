@@ -1,11 +1,10 @@
 /**
  * Created by rharik on 7/6/15.
  */
-'use strict';
-
 var demand = require('must');
 
-describe('gesDispatcher', function () {
+
+describe('gesDispatcher', function() {
     var bootstrap;
     var Mut;
     var mut;
@@ -16,8 +15,9 @@ describe('gesDispatcher', function () {
     var testEventHandler;
     var append;
 
-    before(function () {
+    before( function () {
         bootstrap = require('../intTestBootstrap');
+
     });
 
     beforeEach(function () {
@@ -28,23 +28,22 @@ describe('gesDispatcher', function () {
         append = bootstrap.getInstanceOf('appendToStreamPromise');
 
         testEventHandler = new TestEventHandler();
-        mut = new Mut({ handlers: [testEventHandler] });
+        mut = new Mut({handlers:[testEventHandler]});
         mut.startDispatching();
-        appendData = { expectedVersion: -2, some: 'data' };
-        appendData.events = [new EventData('testingEventNotificationOn', appendData, { eventTypeName: 'testingEventNotificationOn' })];
-        append('dispatchStream', appendData);
+        appendData = { expectedVersion: -2, some:'data' };
+        appendData.events = [new EventData('testingEventNotificationOn', appendData,{eventTypeName:'testingEventNotificationOn'})];
+        append('dispatchStream',appendData);
     });
 
-    context('when calling gesDispatcher', function () {
-        it('should retrieve events', function (done) {
-            setTimeout(function () {
+    context('when calling gesDispatcher', ()=> {
+        it('should retrieve events', (done)=> {
+            setTimeout(()=>{
                 console.log(testEventHandler.eventsHandled);
                 testEventHandler.eventsHandled.length.must.be.at.least(1);
-                testEventHandler.eventsHandled.find(function (x) {
-                    return x.eventTypeName == 'testingEventNotificationOn';
-                }).must.exist();
+                testEventHandler.eventsHandled.find(x=>x.eventTypeName == 'testingEventNotificationOn').must.exist();
                 done();
             }, 1000);
+
         });
     });
 });

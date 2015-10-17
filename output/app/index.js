@@ -6,7 +6,7 @@
 var extend = require('extend');
 var registry = require('./registry');
 
-module.exports = function (_options) {
+module.exports = function(_options) {
     var options = {
         logger: {
             moduleName: 'EventRepository'

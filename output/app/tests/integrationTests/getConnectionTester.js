@@ -2,27 +2,26 @@
  * Created by rharik on 6/10/15.
  */
 
-'use strict';
-
 require('must');
 
-describe('gesConnection', function () {
+describe('gesConnection', function() {
     var gesConnection;
     var bootstrap;
     var mut;
 
-    before(function () {
+    before(function(){
         bootstrap = require('../intTestBootstrap');
     });
 
-    beforeEach(function () {});
+    beforeEach(function(){
+    });
 
-    context('passing proper args', function () {
+    context('passing proper args', ()=> {
         it('should should return a connection', function () {
             mut = bootstrap.getInstanceOf('gesConnection');
-            mut.must.not.be['null']();
+            mut.must.not.be.null();
             mut._handler._connectingPhase.must.equal('Connected');
-        });
+        })
     });
 
     //context('when calling subscription', ()=> {
@@ -37,3 +36,4 @@ describe('gesConnection', function () {
     //    })
     //});
 });
+
