@@ -2,6 +2,8 @@
  * Created by rharik on 6/10/15.
  */
 
+'use strict';
+
 require('must');
 
 describe('gesConnection', function () {
@@ -15,10 +17,10 @@ describe('gesConnection', function () {
 
     beforeEach(function () {});
 
-    context('passing proper args', () => {
+    context('passing proper args', function () {
         it('should should return a connection', function () {
             mut = bootstrap.getInstanceOf('gesConnection');
-            mut.must.not.be.null();
+            mut.must.not.be['null']();
             mut._handler._connectingPhase.must.equal('Connected');
         });
     });

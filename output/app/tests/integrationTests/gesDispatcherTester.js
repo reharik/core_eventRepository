@@ -1,6 +1,8 @@
 /**
  * Created by rharik on 7/6/15.
  */
+'use strict';
+
 var demand = require('must');
 
 describe('gesDispatcher', function () {
@@ -33,12 +35,14 @@ describe('gesDispatcher', function () {
         append('dispatchStream', appendData);
     });
 
-    context('when calling gesDispatcher', () => {
-        it('should retrieve events', done => {
-            setTimeout(() => {
+    context('when calling gesDispatcher', function () {
+        it('should retrieve events', function (done) {
+            setTimeout(function () {
                 console.log(testEventHandler.eventsHandled);
                 testEventHandler.eventsHandled.length.must.be.at.least(1);
-                testEventHandler.eventsHandled.find(x => x.eventTypeName == 'testingEventNotificationOn').must.exist();
+                testEventHandler.eventsHandled.find(function (x) {
+                    return x.eventTypeName == 'testingEventNotificationOn';
+                }).must.exist();
                 done();
             }, 1000);
         });
