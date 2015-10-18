@@ -2,8 +2,7 @@
  * Created by rharik on 6/19/15.
  */
 
-
-module.exports = function() {
+module.exports = function () {
     return class NotificationHandler {
         constructor() {
             this.handlesEvents = ['notificationEvent'];

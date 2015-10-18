@@ -1,7 +1,7 @@
 /**
  * Created by parallels on 9/7/15.
  */
-module.exports = function(Promise, events) {
+module.exports = function (Promise, events) {
 
     var subscriptionMock = class SubscriptionMock extends events.EventEmitter {
         constructor() {
@@ -11,18 +11,18 @@ module.exports = function(Promise, events) {
     var _result;
     var subscription = new subscriptionMock();
     return {
-        appendToStreamPromise: function(name, data) {
+        appendToStreamPromise: function (name, data) {
             subscription.emit('event', data);
             return Promise.resolve(data);
         },
-        subscribeToAllFrom: function(){
+        subscribeToAllFrom: function () {
             return subscription;
         },
-        readStreamEventsForwardPromise: function(){
+        readStreamEventsForwardPromise: function () {
             return _result;
         },
 
-        readStreamEventForwardShouldReturnResult: function(result){
+        readStreamEventForwardShouldReturnResult: function (result) {
             _result = result;
         }
 
