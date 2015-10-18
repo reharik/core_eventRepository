@@ -1,6 +1,7 @@
 /**
  * Created by rharik on 6/10/15.
  */
+"use strict";
 
 module.exports = function (eventstore, logger, eventmodels, invariant, uuid, JSON, extend) {
     return function (_options) {
