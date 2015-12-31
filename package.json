@@ -4,7 +4,7 @@
   "private": false,
   "description": "core_eventRepository",
   "homepage": "https://github.com/reharik/core_eventRepository#readme",
-  "main": "output/app/index.js",
+  "main": "app/index.js",
   "scripts": {
     "test": "mocha --require ./app/babelhook --opts ./app/tests/mocha.opts ./app/tests/unitTests/*.js"
   },
