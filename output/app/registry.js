@@ -8,14 +8,8 @@ var path = require('path');
 
 module.exports = function (_options) {
     var options = _options || {};
-    var container = dagon(options.dagon);
-    return new container(function (x) {
-        return x.pathToRoot(path.join(__dirname, '..')).requireDirectoryRecursively('./app/src')['for']('eventmodels').instantiate(function (i) {
-            return i.asFunc();
-        })['for']('eventstore').instantiate(function (i) {
-            return i.asFunc().withParameters(options || {});
-        })['for']('bluebird').renameTo('Promise')['for']('corelogger').renameTo('logger').instantiate(function (i) {
-            return i.asFunc().withParameters(options.logger || {});
-        }).complete();
+    var registry = dagon(options.dagon).registry;
+    return registry(function (x) {
+        return x.pathToRoot(path.join(__dirname, '..')).requireDirectoryRecursively('./app/src').complete();
     });
 };

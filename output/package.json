@@ -22,14 +22,14 @@
   "dependencies": {
     "JSON": "^1.0.0",
     "bluebird": "^2.9.27",
-    "dagon": "git+https://github.com/reharik/dagon.git#local",
-    "eventstore": "git+https://github.com/reharik/core_eventStore.git",
-    "eventmodels": "git+https://github.com/reharik/core_eventModels.git",
+    "dagon": "git://github.com/reharik/dagon.git#newVersion",
+    "eventstore": "git://github.com/reharik/core_eventStore.git",
+    "eventmodels": "git://github.com/reharik/core_eventModels.git#functional",
     "extend": "^3.0.0",
     "invariant": "^2.1.0",
     "uuid": "^2.0.1",
-    "appdomain": "git+https://github.com/reharik/MF_Domain.git",
-    "corelogger": "git+https://github.com/reharik/core_logger.git"
+    "appdomain": "git://github.com/reharik/MF_Domain.git",
+    "corelogger": "git://github.com/reharik/core_logger.git"
   },
   "devDependencies": {
     "babel": "^5.8.23",
