@@ -24,7 +24,7 @@
     "bluebird": "^2.9.27",
     "dagon": "git://github.com/reharik/dagon.git",
     "eventstore": "git://github.com/reharik/core_eventStore.git",
-    "eventmodels": "git://github.com/reharik/core_eventModels.git#functional",
+    "appfuncs": "git://github.com/reharik/core_applicationFunctions.git",
     "extend": "^3.0.0",
     "invariant": "^2.1.0",
     "uuid": "^2.0.1",

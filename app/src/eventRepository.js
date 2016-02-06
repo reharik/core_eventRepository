@@ -3,8 +3,9 @@
  */
 "use strict";
 
-module.exports = function(eventstoreplugin, logger, eventmodels, invariant, uuid, JSON, extend ) {
+module.exports = function(eventstoreplugin, logger, appfuncs, invariant, uuid, JSON, extend ) {
     return function(_options) {
+        var ef = appfuncs.eventFunctions;
         logger.trace('constructor | constructing gesRepository');
         logger.debug('constructor |gesRepository options passed in ' + _options);
 
@@ -76,7 +77,7 @@ module.exports = function(eventstoreplugin, logger, eventmodels, invariant, uuid
                     logger.trace('getById | new sliceStart calculated: ' + sliceStart);
 
                     logger.debug('getById | about to loop through and apply events to aggregate');
-                    currentSlice.Events.forEach(e => aggregate.applyEvent(eventmodels.gesEventFromStream(e)));
+                    currentSlice.Events.forEach(e => aggregate.applyEvent(ef.incomingEvent(e)));
                     logger.info('getById | events applied to aggregate');
                 } while (version >= currentSlice.NextEventNumber && !currentSlice.IsEndOfStream);
             } catch (error) {
@@ -129,7 +130,7 @@ module.exports = function(eventstoreplugin, logger, eventmodels, invariant, uuid
                 logger.trace('save | calculating expected version :' + expectedVersion);
 
                 logger.debug('save | creating EventData for each event');
-                events          = newEvents.map(x => eventmodels.eventData(x.eventName, x.data, metadata));
+                events          = newEvents.map(e=> { e.metadata = metadata; return ef.outGoingEvent(e)});
                 logger.trace('save | EventData created for each event');
 
                 appendData = {
