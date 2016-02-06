@@ -3,8 +3,9 @@
  */
 "use strict";
 
-module.exports = function (eventstore, logger, eventmodels, invariant, uuid, JSON, extend) {
+module.exports = function (eventstoreplugin, logger, appfuncs, invariant, uuid, JSON, extend) {
     return function (_options) {
+        var ef = appfuncs.eventFunctions;
         logger.trace('constructor | constructing gesRepository');
         logger.debug('constructor |gesRepository options passed in ' + _options);
 
@@ -49,7 +50,7 @@ module.exports = function (eventstore, logger, eventmodels, invariant, uuid, JSO
 
                         logger.info('getById | about to pull events for ' + aggregateType + ' from stream ' + streamName);
                         context$3$0.next = 18;
-                        return regeneratorRuntime.awrap(eventstore.readStreamEventsForwardPromise(streamName, {
+                        return regeneratorRuntime.awrap(eventstoreplugin.readStreamEventsForwardPromise(streamName, {
                             start: sliceStart,
                             count: sliceCount
                         }));
@@ -80,7 +81,7 @@ module.exports = function (eventstore, logger, eventmodels, invariant, uuid, JSO
 
                         logger.debug('getById | about to loop through and apply events to aggregate');
                         currentSlice.Events.forEach(function (e) {
-                            return aggregate.applyEvent(eventmodels.gesEventFromStream(e));
+                            return aggregate.applyEvent(ef.incomingEvent(e));
                         });
                         logger.info('getById | events applied to aggregate');
 
@@ -147,8 +148,8 @@ module.exports = function (eventstore, logger, eventmodels, invariant, uuid, JSO
                         logger.trace('save | calculating expected version :' + expectedVersion);
 
                         logger.debug('save | creating EventData for each event');
-                        events = newEvents.map(function (x) {
-                            return eventmodels.eventData(x.eventName, x.data, metadata);
+                        events = newEvents.map(function (e) {
+                            e.metadata = metadata;return ef.outGoingEvent(e);
                         });
                         logger.trace('save | EventData created for each event');
 
@@ -161,7 +162,7 @@ module.exports = function (eventstore, logger, eventmodels, invariant, uuid, JSO
 
                         logger.trace('save | about to append events to stream');
                         context$3$0.next = 26;
-                        return regeneratorRuntime.awrap(eventstore.appendToStreamPromise(streamName, appendData));
+                        return regeneratorRuntime.awrap(eventstoreplugin.appendToStreamPromise(streamName, appendData));
 
                     case 26:
                         result = context$3$0.sent;
