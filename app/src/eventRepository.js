@@ -3,7 +3,7 @@
  */
 "use strict";
 
-module.exports = function(eventstoreplugin, logger, appfuncs, invariant, uuid, JSON, extend ) {
+module.exports = function(eventstore, logger, appfuncs, invariant, uuid, JSON, extend ) {
     return function(_options) {
         var ef = appfuncs.eventFunctions;
         logger.trace('constructor | constructing gesRepository');
@@ -59,7 +59,7 @@ module.exports = function(eventstoreplugin, logger, appfuncs, invariant, uuid, J
                     // get all events, or first batch of events from GES
 
                     logger.info('getById | about to pull events for ' + aggregateType + ' from stream ' + streamName);
-                    currentSlice = await eventstoreplugin.readStreamEventsForwardPromise(streamName, {
+                    currentSlice = await eventstore.readStreamEventsForwardPromise(streamName, {
                         start: sliceStart,
                         count: sliceCount
                     });
@@ -141,7 +141,7 @@ module.exports = function(eventstoreplugin, logger, appfuncs, invariant, uuid, J
                 logger.debug(appendData);
 
                 logger.trace('save | about to append events to stream');
-                result     = await eventstoreplugin.appendToStreamPromise(streamName, appendData);
+                result     = await eventstore.appendToStreamPromise(streamName, appendData);
                 logger.debug('save | events posted to stream:' + streamName);
 
                 logger.trace('save | clear uncommitted events form aggregate');

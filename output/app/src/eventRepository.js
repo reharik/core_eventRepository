@@ -3,7 +3,7 @@
  */
 "use strict";
 
-module.exports = function (eventstoreplugin, logger, appfuncs, invariant, uuid, JSON, extend) {
+module.exports = function (eventstore, logger, appfuncs, invariant, uuid, JSON, extend) {
     return function (_options) {
         var ef = appfuncs.eventFunctions;
         logger.trace('constructor | constructing gesRepository');
@@ -50,7 +50,7 @@ module.exports = function (eventstoreplugin, logger, appfuncs, invariant, uuid, 
 
                         logger.info('getById | about to pull events for ' + aggregateType + ' from stream ' + streamName);
                         context$3$0.next = 18;
-                        return regeneratorRuntime.awrap(eventstoreplugin.readStreamEventsForwardPromise(streamName, {
+                        return regeneratorRuntime.awrap(eventstore.readStreamEventsForwardPromise(streamName, {
                             start: sliceStart,
                             count: sliceCount
                         }));
@@ -162,7 +162,7 @@ module.exports = function (eventstoreplugin, logger, appfuncs, invariant, uuid, 
 
                         logger.trace('save | about to append events to stream');
                         context$3$0.next = 26;
-                        return regeneratorRuntime.awrap(eventstoreplugin.appendToStreamPromise(streamName, appendData));
+                        return regeneratorRuntime.awrap(eventstore.appendToStreamPromise(streamName, appendData));
 
                     case 26:
                         result = context$3$0.sent;
