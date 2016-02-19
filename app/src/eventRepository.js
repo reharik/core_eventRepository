@@ -3,32 +3,27 @@
  */
 "use strict";
 
-module.exports = function(eventstore, logger, appfuncs, invariant, uuid, JSON, extend ) {
+module.exports = function(eventstore, logger, appfuncs, invariant, uuid, extend ) {
     return function(_options) {
-        var ef = appfuncs.eventFunctions;
-        logger.trace('constructor | constructing gesRepository');
-        logger.debug('constructor |gesRepository options passed in ' + _options);
-
+        var ef      = appfuncs.eventFunctions;
         var options = {
             readPageSize: 1,
             streamType  : 'event'
         };
         extend(options, _options || {});
-        logger.debug('constructor |gesRepository options after merge ' + options);
 
         invariant(
             options.readPageSize,
             "repository requires a read size greater than 0"
         );
 
-        var getById = async function(aggregateType, id, version) {
-            logger.debug('getById | gesRepo calling getById with params:' + aggregateType + ', ' + id + ', ' + version);
+        var getById = function(aggregateType, id, version) {
             var streamName;
             var aggregate;
             var sliceStart = 0;
             var currentSlice;
             var sliceCount;
-            try {
+            co(function*() {
                 invariant(
                     (aggregateType.isAggregateBase && aggregateType.isAggregateBase()),
                     "aggregateType must inherit from AggregateBase"
@@ -43,23 +38,15 @@ module.exports = function(eventstore, logger, appfuncs, invariant, uuid, JSON, e
                 );
 
                 streamName = aggregateType.aggregateName() + id;
-                logger.debug('getById | stream from which events will be pulled: ' + streamName);
-                logger.trace('getById | constructing aggregate');
                 // this might be problematic
                 aggregate = new aggregateType();
-
-                logger.debug('getById | beginning loop to retrieve events');
                 do {
                     // specify number of events to pull. if number of events too large for one call use limit
-                    logger.debug('getById | begining new iteration');
 
-                    sliceCount   = sliceStart + options.readPageSize <= options.readPageSize ? options.readPageSize : version - sliceStart + 1;
-                    logger.trace('getById | number of events to pull this iteration: ' + sliceCount);
-                    logger.trace('getById | number of events to pull this iteration: ' + sliceStart);
+                    sliceCount = sliceStart + options.readPageSize <= options.readPageSize ? options.readPageSize : version - sliceStart + 1;
                     // get all events, or first batch of events from GES
 
-                    logger.info('getById | about to pull events for ' + aggregateType + ' from stream ' + streamName);
-                    currentSlice = await eventstore.readStreamEventsForwardPromise(streamName, {
+                    currentSlice = yield eventstore.readStreamEventsForwardPromise(streamName, {
                         start: sliceStart,
                         count: sliceCount
                     });
@@ -72,21 +59,20 @@ module.exports = function(eventstore, logger, appfuncs, invariant, uuid, JSON, e
                         throw new Error('Aggregate Deleted: ' + streamName);
                     }
 
-                    logger.info('events retrieved from stream: ' + streamName);
-                    sliceStart   = currentSlice.NextEventNumber;
-                    logger.trace('getById | new sliceStart calculated: ' + sliceStart);
+                    sliceStart = currentSlice.NextEventNumber;
 
-                    logger.debug('getById | about to loop through and apply events to aggregate');
                     currentSlice.Events.forEach(e => aggregate.applyEvent(ef.incomingEvent(e)));
-                    logger.info('getById | events applied to aggregate');
+
                 } while (version >= currentSlice.NextEventNumber && !currentSlice.IsEndOfStream);
-            } catch (error) {
-                throw error;
-            }
-            return aggregate;
+                return aggregate;
+            }.bind(this)).catch(function(err) {
+                console.log('==========err=========');
+                console.log(err);
+                console.log('==========ENDerr=========');
+            });
         };
 
-        var save = async function(aggregate, _metadata) {
+        var save = function(aggregate, _metadata) {
             var streamName;
             var newEvents;
             var metadata;
@@ -95,16 +81,13 @@ module.exports = function(eventstore, logger, appfuncs, invariant, uuid, JSON, e
             var events;
             var appendData;
             var result;
-            try {
+            co(function*() {
                 invariant(
                     (aggregate.isAggregateBase && aggregate.isAggregateBase()),
                     "aggregateType must inherit from AggregateBase"
                 );
-                logger.debug('save | repo options');
-                logger.debug('save | ' + JSON.stringify(options));
-
                 // standard data for metadata portion of persisted event
-                metadata = {
+                metadata   = {
                     // handy tracking id
                     commitIdHeader     : uuid.v1(),
                     // type of aggregate being persisted
@@ -112,44 +95,32 @@ module.exports = function(eventstore, logger, appfuncs, invariant, uuid, JSON, e
                     // stream type
                     streamType         : options.streamType
                 };
-                logger.debug('save | default metadata:' + metadata);
 
                 // add extra data to metadata portion of persisted event
                 extend(metadata, _metadata);
-                logger.debug('save | merged metadata: ' + metadata);
-                logger.debug('save | gesRepo calling save with params:' + aggregate + ', ' + metadata.commitIdHeader + ', ' + _metadata);
-
                 streamName = aggregate.constructor.name + aggregate._id;
-                logger.debug('save | gesRepo calling save with params:' + aggregate + ', ' + metadata.commitIdHeader + ', ' + _metadata);
-                logger.trace('save | retrieving uncommitted events');
                 newEvents  = aggregate.getUncommittedEvents();
 
                 originalVersion = aggregate._version - newEvents.length;
-                logger.trace('save | calculating original version number:' + aggregate._version + ' - ' + newEvents.length + ' = ' + originalVersion);
                 expectedVersion = originalVersion == 0 ? -1 : originalVersion - 1;
-                logger.trace('save | calculating expected version :' + expectedVersion);
 
-                logger.debug('save | creating EventData for each event');
-                events          = newEvents.map(e=> { e.metadata = metadata; return ef.outGoingEvent(e)});
-                logger.trace('save | EventData created for each event');
+                events = newEvents.map(e=> {
+                    e.metadata = metadata;
+                    return ef.outGoingEvent(e)
+                });
 
                 appendData = {
                     expectedVersion: expectedVersion,
                     events         : events
                 };
-                logger.debug('save | event data for posting created: ' + JSON.stringify(appendData));
-                logger.debug(appendData);
+                result     = yield eventstore.appendToStreamPromise(streamName, appendData);
 
-                logger.trace('save | about to append events to stream');
-                result     = await eventstore.appendToStreamPromise(streamName, appendData);
-                logger.debug('save | events posted to stream:' + streamName);
-
-                logger.trace('save | clear uncommitted events form aggregate');
                 aggregate.clearUncommittedEvents();
-
-            } catch (error) {
-                throw(error);
-            }
+            }.bind(this)).catch(function(err) {
+                console.log('==========err=========');
+                console.log(err);
+                console.log('==========ENDerr=========');
+            });
             //largely for testing purposes
             return appendData;
         };
