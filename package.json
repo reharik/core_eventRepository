@@ -21,15 +21,16 @@
   "node": ">=0.12.0",
   "dependencies": {
     "JSON": "^1.0.0",
+    "appdomain": "git://github.com/reharik/MF_Domain.git",
+    "appfuncs": "git://github.com/reharik/core_applicationFunctions.git",
     "bluebird": "^2.9.27",
+    "co": "^4.6.0",
+    "corelogger": "git://github.com/reharik/core_logger.git",
     "dagon": "git://github.com/reharik/dagon.git",
     "eventstore": "git://github.com/reharik/core_eventStore.git",
-    "appfuncs": "git://github.com/reharik/core_applicationFunctions.git",
     "extend": "^3.0.0",
     "invariant": "^2.1.0",
-    "uuid": "^2.0.1",
-    "appdomain": "git://github.com/reharik/MF_Domain.git",
-    "corelogger": "git://github.com/reharik/core_logger.git"
+    "uuid": "^2.0.1"
   },
   "devDependencies": {
     "babel": "^5.8.23",
