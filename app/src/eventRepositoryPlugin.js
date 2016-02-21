@@ -3,7 +3,7 @@
  */
 "use strict";
 
-module.exports = function(eventstore, logger, appfuncs, invariant, uuid, extend ) {
+module.exports = function(eventstore, logger, appfuncs, invariant, uuid, extend,co ) {
     return function(_options) {
         var ef      = appfuncs.eventFunctions;
         var options = {
@@ -104,10 +104,7 @@ module.exports = function(eventstore, logger, appfuncs, invariant, uuid, extend 
                 originalVersion = aggregate._version - newEvents.length;
                 expectedVersion = originalVersion == 0 ? -1 : originalVersion - 1;
 
-                events = newEvents.map(e=> {
-                    e.metadata = metadata;
-                    return ef.outGoingEvent(e)
-                });
+                events = newEvents.map(e=> { e.metadata = metadata; return ef.outGoingEvent(e) });
 
                 appendData = {
                     expectedVersion: expectedVersion,
