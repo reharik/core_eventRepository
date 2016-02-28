@@ -89,7 +89,9 @@ module.exports = function(eventstore, logger, appfuncs, invariant, uuid, extend,
                 // standard data for metadata portion of persisted event
                 metadata   = {
                     // handy tracking id
-                    commitIdHeader     : uuid.v1(),
+                    commitIdHeader     : uuid.v4(),
+                    // continuation Id is a more specific tracking id
+                    continuationId     : uuid.v4(),
                     // type of aggregate being persisted
                     aggregateTypeHeader: aggregate.constructor.name,
                     // stream type
